@@ -332,6 +332,10 @@ class AuthControllerTest extends TestCase
             ->deleteJson(route('auth.logout'))
             ->assertOk();
 
+        // Drop the in-memory guard state so the next request re-authenticates
+        // from the token rather than reusing the user resolved above.
+        $this->app['auth']->forgetGuards();
+
         // The same token must no longer grant access to protected routes.
         $this->withHeader('Authorization', "Bearer {$token}")
             ->getJson(route('auth.me'))
@@ -389,6 +393,10 @@ class AuthControllerTest extends TestCase
         $this->withHeader('Authorization', "Bearer {$token}")
             ->postJson(route('auth.refresh'))
             ->assertOk();
+
+        // Drop the in-memory guard state so the next request re-authenticates
+        // from the token instead of reusing the user resolved above.
+        $this->app['auth']->forgetGuards();
 
         // The previous token is blacklisted and can no longer be used.
         $this->withHeader('Authorization', "Bearer {$token}")
