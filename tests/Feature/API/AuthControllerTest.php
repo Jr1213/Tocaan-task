@@ -51,7 +51,6 @@ class AuthControllerTest extends TestCase
                 ],
             ]);
 
-        // Token must actually be issued (guards against positional-destructuring bug).
         $this->assertNotNull($response->json('data.token'));
         $this->assertIsString($response->json('data.token'));
 
@@ -74,7 +73,6 @@ class AuthControllerTest extends TestCase
 
         $user = User::where('email', 'jane@example.com')->firstOrFail();
 
-        // Stored hash must verify against the original plain password (no double-hashing).
         $this->assertNotSame('Passw0rd!xx', $user->password);
         $this->assertTrue(Hash::check('Passw0rd!xx', $user->password));
     }
@@ -332,11 +330,8 @@ class AuthControllerTest extends TestCase
             ->deleteJson(route('auth.logout'))
             ->assertOk();
 
-        // Drop the in-memory guard state so the next request re-authenticates
-        // from the token rather than reusing the user resolved above.
         $this->app['auth']->forgetGuards();
 
-        // The same token must no longer grant access to protected routes.
         $this->withHeader('Authorization', "Bearer {$token}")
             ->getJson(route('auth.me'))
             ->assertUnauthorized();
@@ -394,11 +389,8 @@ class AuthControllerTest extends TestCase
             ->postJson(route('auth.refresh'))
             ->assertOk();
 
-        // Drop the in-memory guard state so the next request re-authenticates
-        // from the token instead of reusing the user resolved above.
         $this->app['auth']->forgetGuards();
 
-        // The previous token is blacklisted and can no longer be used.
         $this->withHeader('Authorization', "Bearer {$token}")
             ->getJson(route('auth.me'))
             ->assertUnauthorized();
