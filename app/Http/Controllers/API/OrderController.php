@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Actions\CreateOrderAction;
 use App\Actions\DeleteOrderAction;
 use App\Actions\UpdateOrderAction;
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Order\IndexOrderRequest;
 use App\Http\Requests\Order\StoreOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\OrderResource;
@@ -24,20 +26,25 @@ class OrderController extends Controller
         private DeleteOrderAction $deleteOrderAction,
     ) {}
 
-    public function index(): JsonResponse
+    public function index(IndexOrderRequest $request): JsonResponse
     {
-        $orders = $this->orderService->paginateForUser(request()->user()->id);
+        $status = $request->validated('status');
+
+        $orders = $this->orderService->paginateForUser(
+            $request->user()->id,
+            $status ? OrderStatus::from($status) : null,
+        );
 
         return response()->json([
             'success' => true,
             'message' => 'Orders retrieved successfully.',
-            'data'    => OrderResource::collection($orders),
+            'data' => OrderResource::collection($orders),
         ]);
     }
 
     public function store(StoreOrderRequest $request): JsonResponse
     {
-        $data            = $request->validated();
+        $data = $request->validated();
         $data['user_id'] = $request->user()->id;
 
         $order = $this->createOrderAction->execute($data);
@@ -45,7 +52,7 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Order created successfully.',
-            'data'    => new OrderResource($order),
+            'data' => new OrderResource($order),
         ], Response::HTTP_CREATED);
     }
 
@@ -56,7 +63,7 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Order retrieved successfully.',
-            'data'    => new OrderResource($order->load('items', 'payment')),
+            'data' => new OrderResource($order->load('items', 'payment')),
         ]);
     }
 
@@ -69,7 +76,7 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Order updated successfully.',
-            'data'    => new OrderResource($order),
+            'data' => new OrderResource($order),
         ]);
     }
 

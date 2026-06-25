@@ -3,8 +3,6 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\PaymentController;
-use App\Http\Controllers\API\ProductController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->as('auth.')->group(function () {
@@ -21,9 +19,8 @@ Route::prefix('auth')->as('auth.')->group(function () {
 Route::middleware('auth:api')->group(function () {
     Route::apiResource('orders', OrderController::class);
 
+    // Payments
+    Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');
+    Route::get('orders/{order}/payment', [PaymentController::class, 'show'])->name('orders.payment.show');
     Route::post('orders/{order}/payment', [PaymentController::class, 'store'])->name('orders.payment.store');
 });
-
-// Public product endpoints.
-Route::get('products', [ProductController::class, 'index'])->name('products.index');
-Route::get('products/{product}', [ProductController::class, 'show'])->name('products.show');

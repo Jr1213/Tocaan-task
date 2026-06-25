@@ -22,9 +22,9 @@ class Payment extends Model
     protected function casts(): array
     {
         return [
-            'method'  => PaymentMethod::class,
-            'status'  => PaymentStatus::class,
-            'amount'  => 'decimal:2',
+            'method' => PaymentMethod::class,
+            'status' => PaymentStatus::class,
+            'amount' => 'decimal:2',
             'paid_at' => 'datetime',
         ];
     }

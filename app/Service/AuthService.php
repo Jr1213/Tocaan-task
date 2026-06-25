@@ -31,6 +31,7 @@ class AuthService
     public function getUserFromToken(): ?User
     {
         $user = request()->user();
+
         return $user;
     }
 

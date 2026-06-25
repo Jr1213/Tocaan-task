@@ -12,11 +12,10 @@ class CreateOrderAction
 
     /**
      * Create an order by orchestrating the service steps: create the order,
-     * add its line items, and sum the total. Stock is not reserved here — it
-     * is decremented when the order is updated. The whole sequence runs in one
+     * add its line items, and sum the total. The whole sequence runs in one
      * transaction so a partial order can't persist.
      *
-     * @param  array{user_id: int, items: array<int, array{product_id: int, quantity: int}>}  $data
+     * @param  array{user_id: int, items: array<int, array{product_name: string, quantity: int, price: float|string}>}  $data
      */
     public function execute(array $data): Order
     {

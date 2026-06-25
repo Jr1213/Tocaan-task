@@ -19,12 +19,12 @@ class OrderResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'         => $this->id,
-            'user_id'    => $this->user_id,
-            'status'     => $this->status,
-            'total'      => $this->total,
-            'items'      => OrderItemResource::collection($this->whenLoaded('items')),
-            'payment'    => $this->whenLoaded('payment', fn () => $this->payment ? new PaymentResource($this->payment) : null),
+            'id' => $this->id,
+            'user_id' => $this->user_id,
+            'status' => $this->status,
+            'total' => $this->total,
+            'items' => OrderItemResource::collection($this->whenLoaded('items')),
+            'payment' => $this->whenLoaded('payment', fn () => $this->payment ? new PaymentResource($this->payment) : null),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

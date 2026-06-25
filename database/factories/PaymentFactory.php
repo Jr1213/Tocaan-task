@@ -21,12 +21,12 @@ class PaymentFactory extends Factory
     public function definition(): array
     {
         return [
-            'order_id'              => Order::factory(),
-            'method'                => PaymentMethod::CashOnDelivery,
-            'status'                => PaymentStatus::Pending,
-            'amount'                => fake()->randomFloat(2, 1, 500),
+            'order_id' => Order::factory(),
+            'method' => PaymentMethod::CashOnDelivery,
+            'status' => PaymentStatus::Pending,
+            'amount' => fake()->randomFloat(2, 1, 500),
             'transaction_reference' => null,
-            'paid_at'               => null,
+            'paid_at' => null,
         ];
     }
 }

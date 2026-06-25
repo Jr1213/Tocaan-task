@@ -21,14 +21,14 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        $data   = $request->validated();
+        $data = $request->validated();
         [$user, $token] = $this->registerAction->execute($data);
 
         return response()->json([
             'success' => true,
             'message' => 'User registered successfully.',
-            'data'    => [
-                'user'  => $user,
+            'data' => [
+                'user' => $user,
                 'token' => $token,
             ],
         ]);
@@ -38,11 +38,12 @@ class AuthController extends Controller
     {
         $credentials = $request->validated();
         $data = $this->loginAction->execute($credentials);
+
         return response()->json([
             'success' => true,
             'message' => 'User logged in successfully.',
-            'data'    => [
-                'user'  => $data['user'],
+            'data' => [
+                'user' => $data['user'],
                 'token' => $data['token'],
             ],
         ]);
@@ -51,10 +52,11 @@ class AuthController extends Controller
     public function me(): JsonResponse
     {
         $user = $this->authService->getUserFromToken();
+
         return response()->json([
             'success' => true,
             'message' => 'Authenticated user retrieved successfully.',
-            'data'    => [
+            'data' => [
                 'user' => $user,
             ],
         ]);
@@ -63,6 +65,7 @@ class AuthController extends Controller
     public function logout(): JsonResponse
     {
         $this->authService->logout();
+
         return response()->json([
             'success' => true,
             'message' => 'User logged out successfully.',
@@ -72,10 +75,11 @@ class AuthController extends Controller
     public function refresh(): JsonResponse
     {
         $token = $this->authService->refreshToken();
+
         return response()->json([
             'success' => true,
             'message' => 'Token refreshed successfully.',
-            'data'    => [
+            'data' => [
                 'token' => $token,
             ],
         ]);

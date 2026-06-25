@@ -6,12 +6,11 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['order_id', 'product_id', 'quantity', 'unit_price', 'total_price'])]
+#[Fillable(['order_id', 'product_name', 'quantity', 'price'])]
 class OrderItem extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     /**
      * Get the attributes that should be cast.
@@ -21,9 +20,8 @@ class OrderItem extends Model
     protected function casts(): array
     {
         return [
-            'quantity'    => 'integer',
-            'unit_price'  => 'decimal:2',
-            'total_price' => 'decimal:2',
+            'quantity' => 'integer',
+            'price' => 'decimal:2',
         ];
     }
 
@@ -38,12 +36,10 @@ class OrderItem extends Model
     }
 
     /**
-     * The product this line item refers to.
-     *
-     * @return BelongsTo<Product, $this>
+     * The line subtotal (quantity × price).
      */
-    public function product(): BelongsTo
+    public function subtotal(): float
     {
-        return $this->belongsTo(Product::class);
+        return $this->quantity * (float) $this->price;
     }
 }

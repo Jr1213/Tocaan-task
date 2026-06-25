@@ -25,7 +25,7 @@ class AuthControllerTest extends TestCase
         ], $overrides);
     }
 
-    ################################ start register tests ################################
+    // ############################### start register tests ################################
     public function test_register_creates_user_and_returns_token(): void
     {
         $response = $this->postJson(route('auth.register'), $this->validPayload());
@@ -130,9 +130,9 @@ class AuthControllerTest extends TestCase
             ->assertJsonValidationErrors('password');
     }
 
-    ################################ end register tests ################################
+    // ############################### end register tests ################################
 
-    ################################ start login tests ################################
+    // ############################### start login tests ################################
     public function test_login_returns_token_with_valid_credentials(): void
     {
         User::factory()->create([
@@ -247,9 +247,9 @@ class AuthControllerTest extends TestCase
             ->assertJsonValidationErrors('email');
     }
 
-    ################################ end login tests ################################
+    // ############################### end login tests ################################
 
-    ################################ start me tests ################################
+    // ############################### start me tests ################################
     public function test_me_returns_authenticated_user(): void
     {
         $user = User::factory()->create([
@@ -304,9 +304,9 @@ class AuthControllerTest extends TestCase
             ->assertUnauthorized();
     }
 
-    ################################ end me tests ################################
+    // ############################### end me tests ################################
 
-    ################################ start logout tests ################################
+    // ############################### start logout tests ################################
     public function test_logout_succeeds_for_authenticated_user(): void
     {
         $user = User::factory()->create();
@@ -343,9 +343,9 @@ class AuthControllerTest extends TestCase
             ->assertUnauthorized();
     }
 
-    ################################ end logout tests ################################
+    // ############################### end logout tests ################################
 
-    ################################ start refresh tests ################################
+    // ############################### start refresh tests ################################
     public function test_refresh_returns_a_new_token(): void
     {
         $user = User::factory()->create();
@@ -402,6 +402,6 @@ class AuthControllerTest extends TestCase
             ->assertUnauthorized();
     }
 
-    ################################ end refresh tests ################################
+    // ############################### end refresh tests ################################
 
 }

@@ -25,7 +25,7 @@ class Order extends Model
     {
         return [
             'status' => OrderStatus::class,
-            'total'  => 'decimal:2',
+            'total' => 'decimal:2',
         ];
     }
 

@@ -2,11 +2,13 @@
 
 namespace App\Service;
 
+use App\Enums\OrderStatus;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Payments\PaymentStrategyFactory;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -15,13 +17,34 @@ class PaymentService
     public function __construct(private PaymentStrategyFactory $strategyFactory) {}
 
     /**
+     * Paginate the payments belonging to a user's orders.
+     *
+     * @return LengthAwarePaginator<int, Payment>
+     */
+    public function paginateForUser(int $userId, int $perPage = 15): LengthAwarePaginator
+    {
+        return Payment::query()
+            ->whereHas('order', fn ($query) => $query->where('user_id', $userId))
+            ->latest()
+            ->paginate($perPage);
+    }
+
+    /**
      * Pay for an order using the given method.
      *
-     * Each order may only be paid once. A pending payment is created for the
-     * order total, then the method's strategy processes it.
+     * Business rules: only orders in the confirmed status can be paid, and each
+     * order may only be paid once. A pending payment is created for the order
+     * total, then the method's strategy processes it.
      */
     public function pay(Order $order, PaymentMethod $method): Payment
     {
+        if ($order->status !== OrderStatus::Confirmed) {
+            throw new HttpException(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                'Only confirmed orders can be paid.',
+            );
+        }
+
         if ($order->payment()->exists()) {
             throw new HttpException(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -31,9 +54,9 @@ class PaymentService
 
         $payment = Payment::create([
             'order_id' => $order->id,
-            'method'   => $method,
-            'status'   => PaymentStatus::Pending,
-            'amount'   => $order->total,
+            'method' => $method,
+            'status' => PaymentStatus::Pending,
+            'amount' => $order->total,
         ]);
 
         $this->strategyFactory->make($method)->pay($payment);

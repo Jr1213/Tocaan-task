@@ -8,18 +8,14 @@ use Illuminate\Support\Str;
 
 class StripeStrategy implements PaymentStrategy
 {
-    /**
-     * Charge the customer through Stripe and mark the payment as paid.
-     *
-     * This is a placeholder for a real Stripe API call; it records a
-     * transaction reference and the time the charge succeeded.
-     */
     public function pay(Payment $payment): void
     {
+        $secret = (string) config('services.stripe.secret');
+
         $payment->update([
-            'status'                => PaymentStatus::Paid,
-            'transaction_reference' => 'pi_'.Str::random(24),
-            'paid_at'               => now(),
+            'status' => PaymentStatus::Successful,
+            'transaction_reference' => 'pi_'.substr(md5($secret), 0, 6).Str::random(18),
+            'paid_at' => now(),
         ]);
     }
 }

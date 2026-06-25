@@ -21,8 +21,8 @@ class OrderFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'status'  => OrderStatus::Pending,
-            'total'   => 0,
+            'status' => OrderStatus::Pending,
+            'total' => 0,
         ];
     }
 }

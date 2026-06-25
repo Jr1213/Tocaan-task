@@ -16,7 +16,7 @@ class PaymentStrategyFactory
     {
         return match ($method) {
             PaymentMethod::CashOnDelivery => app(CashOnDeliveryStrategy::class),
-            PaymentMethod::Stripe         => app(StripeStrategy::class),
+            PaymentMethod::Stripe => app(StripeStrategy::class),
         };
     }
 }
