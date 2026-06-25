@@ -24,6 +24,7 @@ class OrderResource extends JsonResource
             'status'     => $this->status,
             'total'      => $this->total,
             'items'      => OrderItemResource::collection($this->whenLoaded('items')),
+            'payment'    => $this->whenLoaded('payment', fn () => $this->payment ? new PaymentResource($this->payment) : null),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

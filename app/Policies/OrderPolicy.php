@@ -32,6 +32,14 @@ class OrderPolicy
     }
 
     /**
+     * Determine whether the user can pay for the order.
+     */
+    public function pay(User $user, Order $order): bool
+    {
+        return $this->owns($user, $order);
+    }
+
+    /**
      * An order may only be accessed by the user that owns it.
      */
     private function owns(User $user, Order $order): bool

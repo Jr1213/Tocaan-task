@@ -56,7 +56,7 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Order retrieved successfully.',
-            'data'    => new OrderResource($order->load('items')),
+            'data'    => new OrderResource($order->load('items', 'payment')),
         ]);
     }
 
